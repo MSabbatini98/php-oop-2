@@ -6,15 +6,18 @@ class Prodotto {
     protected $name; //string
     public $description; //string
     protected $status; //string
-    protected $materiale; //string
+    protected $materiale = "N/A"; //string
     protected $price; //float
+    protected $sconto = 0; //int
 
     //* construttore 
-    public function __construct($name, $description, $price)
+    public function __construct($name, $description, $price,  $sconto = NULL, $material = NULL )
     {
         $this -> name = $name;
         $this -> description = $description;
         $this -> price = $price;
+        $this -> sconto = $sconto;
+        $this -> material = $material;
     } 
 
 
@@ -28,38 +31,63 @@ class Prodotto {
         return $this -> price . '€';  
     }
 
+    public function setSconto() 
+    {
+        $this->sconto = '0';
+        return $this -> sconto;
+    }
+
+    public function getMaterial()
+    {
+        return $this -> material;  
+    }
 }
 
 class EcoFriendly extends Prodotto {
-    public function __construct($name, $description, $price, $material, $color)
+    public function __construct($name, $description, $price,  $material, $color)
     {
         parent::__construct($name, $description, $price);
         $this -> material  = $material;
         $this -> color = $color;
         
     }
+    
+    public function getMaterial()
+    {
+        return $this -> material;  
+    }
 }
 
 class ReUse extends Prodotto {
 
-    public function __construct($name, $description, $price, $status, $original_price)
+    public function __construct($name, $description, $price,  $status, $material = NULL)
     {
-        parent::__construct($name, $description, $price);
+
+        parent::__construct($name, $description, $price, $material);
         $this -> status = $status;
-        $this -> original_price = $original_price;
-        
+        $this -> material  = $material;
+
+    }
+
+    public function setSconto() 
+    {
+        if ($this-> status == "new") {
+            $this->sconto = '30%';
+        }  elseif ($this-> status == "used") {
+            $this->sconto = '70%';
+        }  elseif ($this-> status == "used as new") {
+            $this->sconto = '50%';
+        } else {
+            $this->sconto = '0%';
+        }
+        return $this -> sconto;
+
+    }
+
+    public function getMaterial()
+    {
+        return $this -> material;  
     }
 }
-$item_0 = new Prodotto('Spazzola peli del cane', 'Spazzola riutilizzabile per peli del cane', 'yes', 15.99);
-$item_1 = new EcoFriendly('Borraccia', 'borraccia termica da 1l', 12.99, 'acciaio', 'blu');
-$item_2 = new EcoFriendly('Cotton Fiock', 'Cotton fiock in bambu', 7.49, 'bambu e cotone', 'marrone & bianco');
-$item_3 = new ReUse('Vaso da giardino', 'vaso da giardino rettangolare, 20x40x15cm', 5.35, 'come nuovo', 15);
-
-$item  = [
-    $item_0,
-    $item_1,
-    $item_2,
-    $item_3,
-];  
 
 ?>
